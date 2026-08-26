@@ -46,6 +46,19 @@ Adafruit_SSD1306 display(
   OLED_RESET
 );
 
+// =====================================================
+// BUTTON
+// =====================================================
+
+#define BUTTON_PIN 16
+
+bool displayOn = true;
+
+unsigned long displayStarted = 0;
+const unsigned long displayDuration = 10000;
+
+bool lastButtonState = LOW;
+
 unsigned long lastDisplayUpdate = 0;
 const unsigned long displayInterval = 500;
 
@@ -56,6 +69,8 @@ const unsigned long displayInterval = 500;
 void setup() {
 
   Serial.begin(115200);
+
+  pinMode(BUTTON_PIN, INPUT);
 
   // -----------------------------
   // Start DHT11
@@ -138,7 +153,7 @@ void setup() {
 
   // Read sensor immediately
   readSensor();
-  updateDisplay();
+  turnDisplayOn();
 }
 
 // =====================================================
@@ -148,6 +163,26 @@ void setup() {
 void loop() {
 
   unsigned long now = millis();
+
+  // -----------------------------------------
+  // Button
+  // -----------------------------------------
+
+  bool buttonState = digitalRead(BUTTON_PIN);
+
+  if (buttonState == HIGH && lastButtonState == LOW) {
+    turnDisplayOn();
+  }
+
+  lastButtonState = buttonState;
+
+  // -----------------------------------------
+  // Turn display off after timeout
+  // -----------------------------------------
+
+  if (displayOn && now - displayStarted >= displayDuration) {
+    turnDisplayOff();
+  }
 
   // -----------------------------------------
   // Read DHT11 every 2 seconds
@@ -164,7 +199,7 @@ void loop() {
   // Update OLED
   // -----------------------------------------
 
-  if (now - lastDisplayUpdate >= displayInterval) {
+  if (displayOn && now - lastDisplayUpdate >= displayInterval) {
 
     lastDisplayUpdate = now;
 
@@ -266,6 +301,21 @@ void updateDisplay() {
   }
 
   display.display();
+}
+
+void turnDisplayOn() {
+  displayOn = true;
+  displayStarted = millis();
+
+  display.ssd1306_command(SSD1306_DISPLAYON);
+
+  updateDisplay();
+}
+
+void turnDisplayOff() {
+  displayOn = false;
+
+  display.ssd1306_command(SSD1306_DISPLAYOFF);
 }
 
 // =====================================================
