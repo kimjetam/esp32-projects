@@ -1,7 +1,7 @@
 # esp32-projects
 
 ## Secrets
-In order to use secrets, like wifi ssid and password, create a file in project folder named `secrets.h` and add it there.
+In order to use secrets, like wifi ssid and password, create a file in project folder named `secrets.h` and add it there. This file is included in `.gitignore` file and will not be checked-in version control.
 
 Example:
 ```
