@@ -109,26 +109,41 @@ void setup() {
   Serial.println();
   Serial.println("Connecting to WiFi...");
 
+  // Allow WiFiManager configuration portal to stay open for 2 minutes
+  wm.setConfigPortalTimeout(120);
+
+  // Initial display
   display.clearDisplay();
   display.setTextSize(1);
   display.setCursor(0, 0);
 
-  display.println("Connecting to");
-  display.println("WiFi...");
-
+  display.println("WiFi setup");
+  display.println();
+  display.println("Connect to:");
+  display.println("ESP32-Weather-Setup");
+  display.println();
+  display.println("Seconds until timeout: 120");
   display.display();
 
   /*
-     WiFiManager first tries previously saved WiFi credentials.
+    WiFiManager first tries previously saved WiFi credentials.
 
-     If it cannot connect, it creates an Access Point:
+    If it cannot connect, it creates an Access Point:
 
-         ESP32-Weather-Setup
+        ESP32-Weather-Setup
 
-     Connect to that AP with your phone/laptop and configure
-     the WiFi network through the web page.
+    Connect to that AP with your phone/laptop and configure
+    the WiFi network through the web page.
+
+    The portal will automatically close after 2 minutes.
   */
 
+  unsigned long wifiSetupStart = millis();
+
+  // autoConnect() blocks here until:
+  // - WiFi connects
+  // - user configures WiFi
+  // - 120 second timeout expires
   bool connected = wm.autoConnect("ESP32-Weather-Setup");
 
   if (!connected) {
