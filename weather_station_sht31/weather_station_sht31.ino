@@ -1,9 +1,9 @@
 #include <WiFi.h>
+#include <WiFiManager.h>
 #include <Wire.h>
 #include <Adafruit_SHT31.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
-#include "secrets.h"
 
 // =====================================================
 // WiFi
@@ -99,27 +99,40 @@ void setup() {
     Serial.println("SHT31 not found");
   }
 
+  
   // -----------------------------
-  // Connect to WiFi
+  // Connect to WiFi using WiFiManager
   // -----------------------------
 
-  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+  WiFiManager wm;
 
-  Serial.print("Connecting to WiFi");
+  Serial.println();
+  Serial.println("Connecting to WiFi...");
 
-  int attempts = 0;
+  display.clearDisplay();
+  display.setTextSize(1);
+  display.setCursor(0, 0);
 
-  while (WiFi.status() != WL_CONNECTED && attempts < 20) {
+  display.println("Connecting to");
+  display.println("WiFi...");
 
-    delay(500);
-    Serial.print(".");
+  display.display();
 
-    attempts++;
-  }
+  /*
+     WiFiManager first tries previously saved WiFi credentials.
 
-  if (WiFi.status() != WL_CONNECTED) {
+     If it cannot connect, it creates an Access Point:
 
-    Serial.println();
+         ESP32-Weather-Setup
+
+     Connect to that AP with your phone/laptop and configure
+     the WiFi network through the web page.
+  */
+
+  bool connected = wm.autoConnect("ESP32-Weather-Setup");
+
+  if (!connected) {
+
     Serial.println("WiFi connection failed");
 
     display.clearDisplay();
@@ -134,11 +147,26 @@ void setup() {
     return;
   }
 
+  // -----------------------------
+  // WiFi connected
+  // -----------------------------
+
   Serial.println();
   Serial.println("Connected to WiFi");
 
   Serial.print("IP address: ");
   Serial.println(WiFi.localIP());
+
+  display.clearDisplay();
+  display.setTextSize(1);
+  display.setCursor(0, 0);
+
+  display.println("WiFi connected");
+  display.println();
+  display.print("IP:");
+  display.println(WiFi.localIP());
+
+  display.display();
 
   // -----------------------------
   // Start HTTP server
