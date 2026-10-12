@@ -1,14 +1,27 @@
 # esp32-projects
 
-## Flashing the full binary image
+## Flashing the Full Binary Image
 
-Use esptool python package. Install it by using `pip install esptool`. Then use these commands:
+Install the `esptool` Python package:
 
+```bash
+pip install esptool
 ```
-# read the flash image from device into a binary file
-esptool --chip esp32 --port COM3 --baud 460800 read_flash 0x0 ALL backup_firmware.bin
 
-# write the flash image into new device
+### Read the Flash Image
+
+Read the full flash image from the ESP32 and save it to a binary file:
+
+```bash
+esptool --chip esp32 --port COM3 --baud 115200 read_flash 0x0 ALL backup_firmware.bin
+```
+
+### Write the Flash Image
+
+Write the saved binary image to another ESP32:
+
+```bash
 esptool --chip esp32 --port COM3 --baud 115200 write_flash 0x0 backup_firmware.bin
 ```
 
+For more info, refer to the [documentation](https://docs.espressif.com/projects/esptool/en/latest/esp32/esptool/scripting.html#esptool.cmds.write_flash).
