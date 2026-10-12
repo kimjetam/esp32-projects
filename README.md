@@ -1,12 +1,14 @@
 # esp32-projects
 
-## Secrets
-In order to use secrets, such as the Wi-Fi SSID and password, create a file named secrets.h in the project folder and add them there. This file is included in .gitignore and will not be checked into version control.
+## Flashing the full binary image
 
-Example:
-```
-#pragma once
+Use esptool python package. Install it by using `pip install esptool`. Then use these commands:
 
-#define WIFI_SSID "your_wifi_name"
-#define WIFI_PASSWORD "your_wifi_password"
 ```
+# read the flash image from device into a binary file
+esptool --chip esp32 --port COM3 --baud 460800 read_flash 0x0 ALL backup_firmware.bin
+
+# write the flash image into new device
+esptool --chip esp32 --port COM3 --baud 115200 write_flash 0x0 backup_firmware.bin
+```
+
