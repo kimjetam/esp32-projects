@@ -143,6 +143,8 @@ void setup() {
   // - user configures WiFi
   wm.autoConnect("ESP32-Camera-Setup");
 
+  WiFi.setSleep(false);
+
   Serial.println();
   Serial.println("Connected to WiFi");
 
@@ -150,14 +152,15 @@ void setup() {
   Serial.println(WiFi.localIP());
   Serial.printf("WiFi RSSI: %d dBm\n", WiFi.RSSI());
 
+  Serial.print("ESP32 MAC Address: ");
+  Serial.println(WiFi.macAddress());
+
+  Serial.printf("WiFi mode: %d (1=STA, 3=AP+STA)\n", WiFi.getMode());
+
 
   startCameraServer();
 
-  Serial.print("Camera Ready! Use 'http://");
-  Serial.print(WiFi.localIP());
-  Serial.println("' to connect");
-  Serial.print("ESP32 MAC Address: ");
-  Serial.println(WiFi.macAddress());
+  Serial.printf("Camera Ready! Use 'http://%s' to connect.\n", WiFi.localIP().toString().c_str());
 }
 
 void loop() {
